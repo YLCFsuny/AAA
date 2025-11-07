@@ -1,12 +1,12 @@
 ollama run deepseek-r1:8b
 
 
-看字节码文件
-服务器上查看  
+查看字节码文件
+服服务器上查看  
 javap 
 解压jar包： jar -xvf  ***.jar
 查看：javap -v	全路径名/字节码文件名  >  路径名/文件名
-行时查看
+运行时查看
 arthas
 java -jar arthas-boot.jar
 dashboard  -i  2000  -n  1
@@ -170,3 +170,4 @@ SOURCE_LOG_POS=9879;
  
 
  
+
