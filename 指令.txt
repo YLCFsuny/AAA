@@ -2,7 +2,7 @@ ollama run deepseek-r1:8b
 
 
 看字节码文件
-务器上查看 
+服务器上查看  
 javap 
 解压jar包： jar -xvf  ***.jar
 查看：javap -v	全路径名/字节码文件名  >  路径名/文件名
@@ -107,29 +107,8 @@ graalvm,openj9（云原生架构）
 
 
 
-
 -Xint：禁止JIT即时编译器优化
 jstack -l 54164 > C:\Users\lenovo\Desktop\fsdownload\lock.txt
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -189,4 +168,5 @@ SOURCE_LOG_POS=9879;
 		<writeHost host="master" url="url: jdbc:mysql://192.168.100.128:3366?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8" user="root" password="123" />
 	</dataHost>
  
+
  
