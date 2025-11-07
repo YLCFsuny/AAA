@@ -1,0 +1,192 @@
+ollama run deepseek-r1:8b
+
+
+看字节码文件
+务器上查看 
+javap 
+解压jar包： jar -xvf  ***.jar
+查看：javap -v	全路径名/字节码文件名  >  路径名/文件名
+行时查看
+arthas
+java -jar arthas-boot.jar
+dashboard  -i  2000  -n  1
+保存已加载的字节码到特定目录：dump  -d  指定目录  类的全限定名
+反编译为源代码：jad  类的全限定名
+查看类加载器：classloader
+
+
+类的生命周期
+加载，连接（验证，准备，解析），初始化，使用，卸载
+类的加载：在方法区生成一个InstanceKlass对象，保存类的所有信息。在堆中生成一份与方法区中数据类似的java.lang.Class对象， 作用是在Java代码中去获取类的信息。
+启动类：D:\0JAVA\java\jdk8\jre\lib
+增加启动类：-Xbootclasspath/a:jar包目录/jar包名
+增加扩展类：-Djava.ext.dirs=原扩展类目录; 增加扩展类的目录
+应用程序类：项目类，maven类
+启动类位置：D:\0JAVA\java\jdk8\jre\lib
+扩展类位置：D:\0JAVA\java\jdk8\jre\lib\ext
+应用程序类：应用程序classpath下的类
+获取类的类加载器：PrintClassLoader.class.getClassLoader()
+获取类的类加载器的父类加载器：PrintParentClassLoader.class.getClassLoader().getParent()
+打印出加载并初始化的类：-XX:+TraceClassLoading
+jdk9之后：模块化
+
+运行时数据区
+线程共享：方法区（元空间）堆（字符串常量池等）
+线程不共享：程序计数器，java虚拟机栈，本地方法栈
+查看堆内存：arthas：dashboard
+查看内存：arthas：memory
+设置栈内存大小：-Xss256k（最小为180k）
+设置堆内存大小：-Xmx4g  -Xms4g
+方法区（存放类）：永久代(-XX:MaxPermSize)（堆内存区）->元空间（直接内存），设置元空间上限：-XX:MaxMetaspaceSize=256m
+直接内存：设置直接内存上限：-XX:MaxDirectMemorySize=1g  (NIO)
+
+
+垃圾回收
+查看垃圾回收信息：-verbose:gc
+保存堆内存快照：arthas：heapdump  目录/文件名.hprof
+
+java -Xms1g -Xmx1g -Xss256k -XX:MaxMetaspaceSize=256m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+DisableExplicitGC -Xloggc:/root/test.log -jar jvm-optimize.jar --server.port=3782
+
+java -Xms512m -Xmx512m \
+  -Xloggc:/root/jvm-optimize-gc.log \
+  -XX:+PrintGCDetails \
+  -XX:+PrintGCDateStamps \
+  -XX:+PrintGCTimeStamps \
+  -XX:+UseGCLogFileRotation \
+  -XX:NumberOfGCLogFiles=5 \
+  -XX:GCLogFileSize=10M \
+  -jar jvm-optimize.jar --server.port=3782
+
+
+arthas：
+查看方法耗时：
+trace
+trace com.itheima.jvmoptimize.performance.PerformanceController test4 --skipJDKMeth false
+trace com.itheima.jvmoptimize.performance.PerformanceController test4 --skipJDKMeth false'#cost > 1000'
+trace com.itheima.jvmoptimize.performance.PerformanceController test4 -n 1
+查看参数：
+watch
+watch com.itheima.jvmoptimize.performance.PerformanceController test4 '{params}' '#cost>1000' -x 2
+stop
+
+
+graalvm
+关闭graal即时编译器：-XX:-UseJVMCICompiler
+构建本地镜像（.exe文件）：
+javac aaa.java
+native-image aaa
+运行：./aaa
+使用SpringBoot3搭建GraalVM环境
+mvn -Pnative clean native:compile 
+
+docker build -t demo:1.0 .  执行dockerfile
+
+Shenandoah GC
+-XX:+UseShenandoahGC 开启Shenandoah GC
+-Xlog:gc 打印GC日志
+
+serial
+
+
+JVM：解释运行，内存管理，即时编译
+oracle/openjdk（支持二次开发）:hotspot
+graalvm,openj9（云原生架构）
+阿里dragonwell龙井
+编译器
+类加载子系统：类加载器
+运行时数据区：（管理jvm使用到的内存）（直接内存也可存放数据，主要由NIO使用：ByteBuffer directBuffer = ByteBuffer.allocateDirect(size)）
+栈（本地方法栈，Java虚拟机栈）栈帧：局部变量表，操作数栈，帧数据（动态链接，方法出口，异常表）
+程序计数器（记录当前要执行的的字节码指令的地址）
+堆：栈上的局部变量表中，可以存放堆上对象的引用。静态变量也可以存放堆对象的引用，通过静态变量就可以实现对象在线程之间共享
+方法区：每一个加载的类的元信息（基础信息），运行时常量池；（在方法区生成一个InstanceKlass对象，保存类的所有信息）（jdk8及之后在堆外的元空间）字符串常量池（jdk7及之后在堆上）
+执行引擎：解释器，即时编译器，垃圾回收器；
+本地接口
+
+字节码
+基本信息，常量池，字段，方法，属性
+
+
+
+
+-Xint：禁止JIT即时编译器优化
+jstack -l 54164 > C:\Users\lenovo\Desktop\fsdownload\lock.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+开放端口
+sudo firewall-cmd --zone=public --add-port=9066/tcp --permanent
+sudo firewall-cmd --reload
+lunix查看所有开放端口
+关闭以上所有服务器的防火墙：​​
+systemctl stop firewalld
+systemctl disable firewalld
+firewall-cmd --state
+# 以root用户进入
+docker exec -u root -it 容器ID bash
+
+
+连接mycat
+mysql -h192.168.100.128 -P8066 -uroot -p --protocol=TCP
+mysql -h127.0.0.1 -P9066 -uroot -p --protocol=TCP
+
+
+开启主从复制
+CHANGE REPLICATION SOURCE TO 
+SOURCE_HOST='10.129.17.73', 
+SOURCE_USER='sm', 
+SOURCE_PASSWORD='321', 
+SOURCE_LOG_FILE='binlog.000006', 
+SOURCE_LOG_POS=9879;
+
+
+读写分离
+	<schema name="DB01" checkSQLschema="true" sqlMaxLimit="100">
+		<table name="TB_ORDER" dataNode="dn1,dn2" rule="auto-sharding-long" />
+	</schema>
+
+	<dataNode name="dn1" dataHost="dhost1" database="db01" />
+	<dataNode name="dn2" dataHost="dhost2" database="db01" />
+
+	<dataHost name="dhost1" maxCon="1000" minCon="10" balance="0" writeType="0" dbType="mysql" dbDriver="jdbc" switchType="1"  slaveThreshold="100">
+		<heartbeat>select user()</heartbeat>
+		<writeHost host="master" url="url: jdbc:mysql://10.129.17.73:3306?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8" user="root" password="1234" />
+	</dataHost>
+ 
+	<dataHost name="dhost2" maxCon="1000" minCon="10" balance="0" writeType="0" dbType="mysql" dbDriver="jdbc" switchType="1"  slaveThreshold="100">
+		<heartbeat>select user()</heartbeat>
+		<writeHost host="master" url="url: jdbc:mysql://192.168.100.128:3366?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8" user="root" password="123" />
+	</dataHost>
+ 
+ 
